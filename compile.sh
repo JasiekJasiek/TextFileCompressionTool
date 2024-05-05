@@ -1,0 +1,1 @@
+g++ -std=c++17 -Wall -o compress compress.cpp && g++ -std=c++17 -Wall -o decompress decompress.cpp
