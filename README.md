@@ -5,5 +5,5 @@
 #### If you have permission denied error type to console `chmod 777 compile.sh`
 ## To `compress` 
   use `./compress <fileToCompress>` for example `./compress test.txt`
-## To`decompress` 
+## To `decompress` 
   use `./decompress <folderWithCompressedData>` for example `./decompress text`
