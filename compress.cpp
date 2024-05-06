@@ -69,7 +69,7 @@ string compressFilesBits(unordered_map< unsigned char, string >& huffmanCodes, s
 }
 
 
-void removeFile(string& filePath){
+void removeFile(string filePath){
     const string comand = "rm " + filePath;
     system(comand.c_str());
 }
@@ -108,7 +108,6 @@ void saveDir(string filePath, unordered_map< unsigned char, int >& freq, unorder
 }
 
 void save(string filePath, string& bits, unordered_map< unsigned char, int >& freq, unordered_map< unsigned char, string >& huffmanCodes){
-    removeFile(filePath);
     prepareFilePath(filePath);
     makedir(filePath);
     int numBytes = ((bits.length() + 7) / 8);
@@ -123,6 +122,7 @@ int main(int argc, char *argv[]){
     Node* root = makeTree(freq);
     unordered_map< unsigned char, string > huffmanCodes = getHuffmanCodes(root);
     string compressBits = compressFilesBits(huffmanCodes, characters);
+    removeFile(argv[ 1 ]);
     save(argv[ 1 ], compressBits, freq, huffmanCodes);
 
     return 0;

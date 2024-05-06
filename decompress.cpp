@@ -7,12 +7,10 @@ const string DIR = "dir";
 
 unordered_map< unsigned char, int > CodesSize;
 
-int additionalBits;
-
-unordered_map< string, unsigned char > getHuffmanCodes(string filePath){
+unordered_map< string, unsigned char > getHuffmanCodesAndAdditionalBits(string filePath){
     unordered_map< string, unsigned char > huffmanCodes;
     fstream file(filePath, ios::in);
-    int n; file >> n >> additionalBits;
+    int n, skip; file >> n >> skip;
     short int c;
     string temp;
     for(int i = 0; i < n; ++i){
@@ -46,7 +44,7 @@ void addNewLeaf(Node* curr, int i, string& bits, char& c){
 
 Node* makeTree(string filePath){
     Node* root = createNode('\0', 0, nullptr, nullptr);
-    unordered_map< string, unsigned char > huffmanCodes = getHuffmanCodes(filePath + "/dir");
+    unordered_map< string, unsigned char > huffmanCodes = getHuffmanCodesAndAdditionalBits(filePath + "/" + DIR);
     for(auto[ a, b ] : huffmanCodes){
         string bits = a;
         char c = b;
@@ -55,7 +53,14 @@ Node* makeTree(string filePath){
     return root;
 }
 
-string getEncodedBits(string filePath){
+int getAdditionalBits(string filePath){
+    fstream file(filePath + '/' + DIR, ios::in);
+    int additionalBits, _; file >> _ >> additionalBits;
+    file.close();
+    return additionalBits;
+}
+
+string getEncodedBits(string filePath, int& additionalBits){
     ifstream file(filePath + "/" + ENCRYPTED, ios::binary);
     stringstream ss;
     ss << file.rdbuf();
@@ -66,6 +71,7 @@ string getEncodedBits(string filePath){
             bits += ((byte >> j) & 1) ? '1' : '0';
         }
     }
+    file.close();
     return bits.substr(0, bits.size() - additionalBits);
 }
 
@@ -117,7 +123,8 @@ void removeDir(string dirPath){
 int main(int argc, char *argv[]){
 
     Node* root = makeTree(argv[ 1 ]);
-    string bits = getEncodedBits(argv[ 1 ]);
+    int additionalBits = getAdditionalBits(argv[ 1 ]);
+    string bits = getEncodedBits(argv[ 1 ], additionalBits);
     string decodedText = decode(root, bits);
     removeDir(argv[ 1 ]);
     save(argv[ 1 ], decodedText);
